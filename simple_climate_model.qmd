@@ -2,6 +2,8 @@
 title: "Simple Climate Model"
 ---
 
+For this chapter you may find it useful to have [this RStudio project folder](https://github.com/mbh038/climate_change/archive/refs/heads/main.zip) if you wish to follow along and try out the exercises at the end.
+
 ```{r}
 library(tidyverse)
 library(here)
@@ -10,15 +12,13 @@ library(cowplot())
 
 ### A brief review of radiation
 
-All bodies emit radaition across the electromagnetic spectrum. The
-wavelength of peak intensity is determined by the temperature of the
-body, as is the total amount of radiation emitted. In fact, the
-Stefan-Boltzmann law tells us that if a body has a temperature $T_e$
+All bodies emit radiation across the electromagnetic spectrum. The wavelength of peak intensity is determined by the temperature of the body, as is the total amount of radiation emitted. In fact, the
+**Stefan-Boltzmann law** tells us that if a body has a temperature $T_e$
 then
 
 $$
 \text{total radiation emitted per square metre of surface} = \sigma T_e^4
-$$ where $T_e$ is known as the emission temperatue and $\sigma$ = 5.67 x
+$$ where $T_e$ is known as the emission temperature and $\sigma$ = 5.67 x
 10^-8^ Wm^-2^K^-4^ is the Stefan-Boltzmann constant
 
 -   Hotter things emit more radiation
