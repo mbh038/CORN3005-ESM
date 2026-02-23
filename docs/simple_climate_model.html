@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>1&nbsp; Simple Climate Model – CORN3005-ESM</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./index.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./simple_climate_model.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Simple Climate Model</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">CORN3005-ESM</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./simple_climate_model.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Simple Climate Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#a-brief-review-of-radiation" id="toc-a-brief-review-of-radiation" class="nav-link active" data-scroll-target="#a-brief-review-of-radiation"><span class="header-section-number">1.0.1</span> A brief review of radiation</a></li>
+  <li><a href="#global-energy-budget" id="toc-global-energy-budget" class="nav-link" data-scroll-target="#global-energy-budget"><span class="header-section-number">1.0.2</span> Global Energy Budget</a></li>
+  <li><a href="#outgoing-longwave-radiation-olr" id="toc-outgoing-longwave-radiation-olr" class="nav-link" data-scroll-target="#outgoing-longwave-radiation-olr"><span class="header-section-number">1.0.3</span> Outgoing longwave radiation (OLR)</a></li>
+  <li><a href="#a-one-layer-atmosphere" id="toc-a-one-layer-atmosphere" class="nav-link" data-scroll-target="#a-one-layer-atmosphere"><span class="header-section-number">1.0.4</span> A one layer atmosphere</a></li>
+  <li><a href="#the-two-layer-grey-gas-model" id="toc-the-two-layer-grey-gas-model" class="nav-link" data-scroll-target="#the-two-layer-grey-gas-model"><span class="header-section-number">1.0.5</span> The two-layer grey gas model</a></li>
+  <li><a href="#tuning-the-grey-gas-model-to-observations" id="toc-tuning-the-grey-gas-model-to-observations" class="nav-link" data-scroll-target="#tuning-the-grey-gas-model-to-observations"><span class="header-section-number">1.0.6</span> Tuning the grey gas model to observations</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Simple Climate Model</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="fu">cowplot</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="a-brief-review-of-radiation" class="level3" data-number="1.0.1">
+<h3 data-number="1.0.1" class="anchored" data-anchor-id="a-brief-review-of-radiation"><span class="header-section-number">1.0.1</span> A brief review of radiation</h3>
+<p>All bodies emit radaition across the electromagnetic spectrum. The wavelength of peak intensity is determined by the temperature of the body, as is the total amount of radiation emitted. In fact, the Stefan-Boltzmann law tells us that if a body has a temperature <span class="math inline">\(T_e\)</span> then</p>
+<p><span class="math display">\[
+\text{total radiation emitted per square metre of surface} = \sigma T_e^4
+\]</span> where <span class="math inline">\(T_e\)</span> is known as the emission temperatue and <span class="math inline">\(\sigma\)</span> = 5.67 x 10<sup>-8</sup> Wm<sup>-2</sup>K<sup>-4</sup> is the Stefan-Boltzmann constant</p>
+<ul>
+<li>Hotter things emit more radiation</li>
+<li>The wavelength of peak intensity is lower for hotter things.</li>
+</ul>
+<p>From this we can work out the emission temperature of the earth <span class="math inline">\(T_e\)</span>.</p>
+<p><strong>Emission Temperature of the Earth</strong></p>
+<p>The basic idea is that Earth is in energy balance — the power it absorbs from the Sun equals the power it radiates back to space (averaged over time).</p>
+<hr>
+<p>Incoming solar power absorbed:</p>
+<p>The Sun hits a circular cross-section of Earth (area = <span class="math inline">\(\pi R^2\)</span>), delivering <span class="math inline">\(S\)</span> watts per square metre. But Earth reflects some of that — the fraction reflected is the albedo α. So the power absorbed is:</p>
+<p><span class="math display">\[
+S \times \pi R² \times (1 − \alpha)
+\]</span></p>
+<hr>
+<p>Outgoing thermal radiation:</p>
+<p>Earth radiates from its entire surface (area = <span class="math inline">\(4\pi R^2\)</span>) as a blackbody, following the <strong>Stefan-Boltzmann law</strong>:</p>
+<p><span class="math display">\[
+σT_e⁴ \times 4πR²
+\]</span></p>
+<p>The <span class="math inline">\(\sigma T_e^4\)</span> part is just the power radiated per square metre by a blackbody at temperature <span class="math inline">\(T_e\)</span> — this is the Stefan-Boltzmann law, where <span class="math inline">\(\sigma \approx 5.67 × 10^{-8}\)</span> W/m²/K⁴ is the Stefan-Boltzmann constant.</p>
+<hr>
+<p>Setting them equal:</p>
+<p><span class="math display">\[
+S × πR² × (1 − α) = σT_e⁴ × 4πR²
+\]</span></p>
+<p>The πR² cancels from both sides, giving:</p>
+<p><span class="math display">\[
+S(1 − α) = 4σT_e⁴
+\]</span></p>
+<p>Rearranging for T_e:</p>
+<p><span class="math display">\[
+T_e = \left[\frac{ S(1 − α) }{ 4σ }\right]^{1/4}
+\]</span> The factor of <strong>4</strong> comes from the geometry — Earth intercepts sunlight as a disc but radiates as a sphere, and a sphere has 4× the area of its circular cross-section. It’s essentially averaging the incoming solar intensity over the whole surface.</p>
+<p>Putting in numbers, we can find <span class="math inline">\(T_e\)</span>. <span class="math inline">\(S\)</span>, the solar intensity at the top of the Earth’s atmosphere is 1364 W m^2, <span class="math inline">\(\sigma\)</span> is the Stefan-Boltzmann constant defined above and <span class="math inline">\(\alpha\)</span>, the average albedo of the whole Earth system as seen from space is about 0.3. Hence</p>
+<p>$$ <span class="math display">\[\begin{align}
+T_e &amp;= \left[\frac{ S(1 − α) }{ 4σ }\right]^{1/4}\\
+&amp;=\left[\frac{ 1364\times(1 − 0.3) }{ 4 \times 5.67\times 10^{-8} }\right]^{1/4}\\
+&amp;=255 \text{K}
+
+\end{align}\]</span> $$ We note in passing here that the actual average surface temperature of the Earth is somewhat higher than this, at about 288 K.</p>
+<p><strong>Solar Radiation</strong></p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="figures/solar_emission_spectrum.png" class="img-fluid figure-img" width="782"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>The spectrum peaks in the visible range</li>
+<li>Most energy is at these wavelengths.</li>
+<li>It is no coincidence that our eyes are sensitive to this range of wavelengths!</li>
+<li>Longer wavelengths are called “infrared”, shorter wavelengths are called “ultraviolet”.</li>
+</ul>
+<p>The shape of the spectrum is a fundamental characteristic of radiative emissions (think about the colour of burning coals in a fire – cooler = red, hotter = white)</p>
+<p>Theory and experiments tell us that both the total flux of emitted radiation, and the wavelength of maximum emission, depend only on the temperature of the source.</p>
+<p>The theoretical spectrum was worked out by Max Planck around the beginning of the 20th century,and is therefore known as the “Planck” spectrum (or simply the black body spectrum).</p>
+<p>**Effect on spectrum of change of temperature</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="figures/spectrum_vs_T.png" class="img-fluid figure-img" width="782"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Going from cool to warm:</p>
+<ul>
+<li>the total emission increases - hotter things shine more brightly</li>
+<li>maximum emission occurs at shorter wavelengths.</li>
+<li>The integral of these curves over all wavelengths gives us our familiar <span class="math inline">\(\sigma T^4\)</span></li>
+</ul>
+<p>Mathematically it turns out that</p>
+<p><span class="math display">\[
+λ_{max} T = \text{constant}
+\]</span></p>
+<p>(known as Wien’s displacement law).</p>
+<p>By fitting the observed solar emission to a blackbody curve, we can deduce that the emission temperature of the sun is about 6000 K.</p>
+<p>Knowing this, and knowing that the solar spectrum peaks at 0.6 micrometers, we can calculate the wavelength of maximum terrestrial radiation as</p>
+<p><span class="math display">\[
+λ_{max}^{Earth} = 0.6 ~ \mu m \frac{6000}{255} = 14 ~ \mu m
+\]</span></p>
+<p>This is in the far-infrared part of the spectrum.</p>
+</section>
+<section id="global-energy-budget" class="level3" data-number="1.0.2">
+<h3 data-number="1.0.2" class="anchored" data-anchor-id="global-energy-budget"><span class="header-section-number">1.0.2</span> Global Energy Budget</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="figures/global_energy_budget.png" class="img-fluid figure-img" width="825"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="outgoing-longwave-radiation-olr" class="level3" data-number="1.0.3">
+<h3 data-number="1.0.3" class="anchored" data-anchor-id="outgoing-longwave-radiation-olr"><span class="header-section-number">1.0.3</span> Outgoing longwave radiation (OLR)</h3>
+<p><span class="math display">\[ \text{OLR} = \tau\sigma T_s^4 \]</span></p>
+<p>Where <span class="math inline">\(T_s\)</span> is the globally averaged surface temperature = 288 K, <span class="math inline">\(\sigma\)</span> is the Stefan-Boltzmann constant = 5.67 x 10<sup>-8</sup> Wm<sup>-2</sup>K<sup>-4</sup>.</p>
+<p>Given that OLR = 239 Wm<sup>-2</sup> we find that <span class="math inline">\(\tau\)</span>, the transmissivity of the atmosphere to long wave radiation, is about 0.61:</p>
+<p><span class="math display">\[\tau \approx 0.61\]</span></p>
+</section>
+<section id="a-one-layer-atmosphere" class="level3" data-number="1.0.4">
+<h3 data-number="1.0.4" class="anchored" data-anchor-id="a-one-layer-atmosphere"><span class="header-section-number">1.0.4</span> A one layer atmosphere</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="figures/1layer_atm_sketch.png" class="img-fluid figure-img" width="479"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="assumptons" class="level4" data-number="1.0.4.1">
+<h4 data-number="1.0.4.1" class="anchored" data-anchor-id="assumptons"><span class="header-section-number">1.0.4.1</span> Assumptons:</h4>
+<ul>
+<li>The atmosphere is a single layer of air at temperature <span class="math inline">\(T_a\)</span></li>
+<li>The atmosphere is completely transparent to shortwave solar radiation.</li>
+<li>The surface absorbs shortwave radiation <span class="math inline">\((1-\alpha)Q\)</span> where <span class="math inline">\(\alpha\)</span> iis the surface albedo.</li>
+<li>The atmosphere is completely opaque to infrared radiation</li>
+<li>Both surface and atmosphere emit radiation as blackbodies (<span class="math inline">\(\sigma T_s^4, \sigma T_a^4\)</span>)</li>
+<li>The atmosphere radiates equally up and down (<span class="math inline">\(\sigma T_a^4\)</span>)</li>
+<li>There are no other heat transfer mechanisms</li>
+</ul>
+</section>
+<section id="energy-balance-for-the-surface" class="level4" data-number="1.0.4.2">
+<h4 data-number="1.0.4.2" class="anchored" data-anchor-id="energy-balance-for-the-surface"><span class="header-section-number">1.0.4.2</span> Energy balance for the surface</h4>
+<p><span class="math display">\[
+\begin{split}
+\begin{align*}
+\text{energy in} &amp;= \text{energy out} \\
+(1-\alpha) Q + \sigma T_a^4 &amp;= \sigma T_s^4 \\
+\end{align*}
+\end{split}
+\]</span></p>
+<p>The presence of the atmosphere above means there is an additional source term: downwelling infrared radiation from the atmosphere.</p>
+<p>We call this the <strong>back radiation</strong>.</p>
+</section>
+<section id="energy-balance-for-the-atmosphere" class="level4" data-number="1.0.4.3">
+<h4 data-number="1.0.4.3" class="anchored" data-anchor-id="energy-balance-for-the-atmosphere"><span class="header-section-number">1.0.4.3</span> Energy Balance for the atmosphere</h4>
+<p><span class="math display">\[
+\begin{split}
+\begin{align}
+\text{energy in} &amp;= \text{energy out} \\
+\sigma T_s^4 &amp;= A\uparrow + A\downarrow = 2 \sigma T_a^4 \\
+\end{align}
+\end{split}
+\]</span> which means that</p>
+<p><span class="math display">\[
+T_s = 2^\frac{1}{4} T_a \approx 1.2 T_a
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+T_a^4 = \frac{1}{2}T_s^4
+\]</span></p>
+<p>So we have just determined that, in order to have a purely radiative equilibrium, we must have <span class="math inline">\(T_s &gt; T_a\)</span></p>
+<p><em>The surface must be warmer than the atmosphere.</em></p>
+</section>
+<section id="solve-for-the-radiative-equilibrium-surface-temperature" class="level4" data-number="1.0.4.4">
+<h4 data-number="1.0.4.4" class="anchored" data-anchor-id="solve-for-the-radiative-equilibrium-surface-temperature"><span class="header-section-number">1.0.4.4</span> Solve for the radiative equilibrium surface temperature</h4>
+<p>Now we can eliminate the term involving <span class="math inline">\(T_a\)</span> from the surface equation to find</p>
+<p><span class="math display">\[
+\frac{1}{2} \sigma T_s^4 = (1-\alpha) Q
+\]</span></p>
+<p>and use the definition of the emission temperature <span class="math inline">\(T_e\)</span> to write</p>
+<p><span class="math display">\[
+(1-\alpha) Q = \sigma T_e^4
+\]</span></p>
+<p>In fact, in this model, <span class="math inline">\(T_e\)</span> is identical to the atmospheric temperature <span class="math inline">\(T_a\)</span> , since all the OLR originates from this layer.</p>
+<p>Solve for the surface temperature:</p>
+<p><span class="math display">\[
+T_s = 2^\frac{1}{4} T_e
+\]</span></p>
+<p>Putting in observed numbers (that the OLR = 239 Wm<sup>-2</sup>, from which we deduce that <span class="math inline">\(T_e\)</span> = 255 K) gives a surface temperature of</p>
+<p><span class="math display">\[
+T_s = 303\text{K}
+\]</span></p>
+<p>This model is one small step closer to reality: surface is warmer than atmosphere, emissions to space generated in the atmosphere, atmosphere heated from below and helping to keep surface warm.</p>
+</section>
+<section id="why-does-this-model-overpredict-the-surface-temperature" class="level4" data-number="1.0.4.5">
+<h4 data-number="1.0.4.5" class="anchored" data-anchor-id="why-does-this-model-overpredict-the-surface-temperature"><span class="header-section-number">1.0.4.5</span> Why does this model overpredict the surface temperature</h4>
+<p>Our model now overpredicts the surface temperature by about 15ºC (303 K versus the observed 288 K).</p>
+<p>Ideas about why?</p>
+<p>Basically we just need to read our <strong>list of assumptions</strong> above and realize that none of them are very good approximations:</p>
+<ul>
+<li>The atmosphere absorbs some solar radiation.</li>
+<li>The atmosphere is NOT a perfect absorber of longwave radiation</li>
+<li>Absorption and emission varies strongly with wavelength (atmosphere does not behave like a blackbody).</li>
+<li>Emissions are not determined by a single temperature <span class="math inline">\(T_a\)</span> but by the detailed vertical profile of air temperature.</li>
+<li>Energy is redistributed in the vertical by a variety of dynamical transport mechanisms (e.g.&nbsp;convection and boundary layer turbulence).</li>
+</ul>
+</section>
+</section>
+<section id="the-two-layer-grey-gas-model" class="level3" data-number="1.0.5">
+<h3 data-number="1.0.5" class="anchored" data-anchor-id="the-two-layer-grey-gas-model"><span class="header-section-number">1.0.5</span> The two-layer grey gas model</h3>
+<p>Let’s generalize the above model just a little bit to build a slighly more realistic model of longwave radiative transfer.</p>
+<p>We will address two shortcomings of our single-layer model:</p>
+<ul>
+<li>No vertical structure</li>
+<li>100% longwave opacity</li>
+</ul>
+<p>Relaxing these two assumptions gives us what turns out to be a very useful prototype model for <strong>understanding how the greenhouse effect works</strong></p>
+<section id="assumptions" class="level4" data-number="1.0.5.1">
+<h4 data-number="1.0.5.1" class="anchored" data-anchor-id="assumptions"><span class="header-section-number">1.0.5.1</span> Assumptions</h4>
+<ul>
+<li>The atmosphere is <strong>transparent to shortwave radiation</strong> (still)</li>
+<li>Divide the atmosphere up into <strong>two layers of equal mass</strong> (the dividing line for this turns out to be at 500 hPa pressure level)</li>
+<li><strong>Each layer absorbs only a fraction</strong> <span class="math inline">\(\epsilon\)</span> of whatever longwave radiation is incident upon it.</li>
+<li>We will call the fraction the <strong>absorptivity</strong> of the layer.</li>
+<li>Assume <span class="math inline">\(\epsilon\)</span> is the same in each layer</li>
+</ul>
+<p>This is called the <strong>grey gas</strong> model, where <strong>grey</strong> here means the emission and absorption have <strong>no spectral dependence</strong> (same at every wavelength).</p>
+<p>We can think of this model informally as a “leaky greenhouse”.</p>
+<p>Note that the assumption that <span class="math inline">\(\epsilon\)</span> is the same in each layer is appropriate if the absorption is actually carried out by a gas that is well-mixed in the atmosphere.</p>
+<p>Out of our two most important absorbers:</p>
+<ul>
+<li>CO<sub>2</sub> is well mixed</li>
+<li>H<sub>2</sub>O is not (mostly confined to lower troposphere due to strong temperature dependence of the saturation vapor pressure).</li>
+</ul>
+<p>But we will ignore this aspect of reality for now..</p>
+</section>
+<section id="kirchoffs-law" class="level4" data-number="1.0.5.2">
+<h4 data-number="1.0.5.2" class="anchored" data-anchor-id="kirchoffs-law"><span class="header-section-number">1.0.5.2</span> Kirchoff’s Law</h4>
+<p>In order to build our model, we need to introduce one additional piece of physics known as Kirchoff’s Law:</p>
+<p><span class="math display">\[
+\text{absorptivity} = \text{emissivity}
+\]</span></p>
+<p>So <strong>if a layer of atmosphere at temperature</strong> <span class="math inline">\(\textbf{T}\)</span> <strong>absorbs a fraction</strong> <span class="math inline">\(\epsilon\)</span> of incident longwave radiation, it must emit</p>
+<p><span class="math display">\[
+\epsilon\sigma T^4
+\]</span></p>
+<p>both up and down.</p>
+</section>
+<section id="a-sketch-of-the-radiative-fluxes-in-the-2-layer-atmosphere" class="level4" data-number="1.0.5.3">
+<h4 data-number="1.0.5.3" class="anchored" data-anchor-id="a-sketch-of-the-radiative-fluxes-in-the-2-layer-atmosphere"><span class="header-section-number">1.0.5.3</span> A sketch of the radiative fluxes in the 2-layer atmosphere</h4>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="figures/2layer_atm_sketch.png" class="img-fluid figure-img" width="636"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>Surface temperature is <span class="math inline">\(T_s\)</span></li>
+<li>Atm. temperatures are <span class="math inline">\(T_0, T_1\)</span>, where <span class="math inline">\(T_0\)</span> is closest to the surface.</li>
+<li>Absorptivity of atm layers is <span class="math inline">\(\epsilon\)</span></li>
+<li>Surface emission is <span class="math inline">\(\sigma T_s^4\)</span></li>
+<li>Atm emission is <span class="math inline">\(\epsilon \sigma T_0^4, \epsilon \sigma T_1^4\)</span> (up and down)</li>
+<li>Absorptivity = emissivity for atmospheric layers</li>
+<li>a fraction <span class="math inline">\((1-\epsilon)\)</span> of the longwave beam is transmitted through each layer</li>
+</ul>
+</section>
+<section id="tracing-the-upwelling-beam-of-longwave-radiation" class="level4" data-number="1.0.5.4">
+<h4 data-number="1.0.5.4" class="anchored" data-anchor-id="tracing-the-upwelling-beam-of-longwave-radiation"><span class="header-section-number">1.0.5.4</span> Tracing the upwelling beam of longwave radiation</h4>
+<p>Let’s think about the upwelling beam of longwave radiation, which we denote <span class="math inline">\(U\)</span></p>
+</section>
+<section id="surface-to-layer-0" class="level4" data-number="1.0.5.5">
+<h4 data-number="1.0.5.5" class="anchored" data-anchor-id="surface-to-layer-0"><span class="header-section-number">1.0.5.5</span> Surface to layer 0</h4>
+<p>We start at the surface. The upward flux <strong>from the surface to layer 0</strong> is</p>
+<p><span class="math display">\[
+U_0 = \sigma T_s^4
+\]</span></p>
+<p>(just the emission from the suface).</p>
+</section>
+<section id="layer-0-to-layer-1" class="level4" data-number="1.0.5.6">
+<h4 data-number="1.0.5.6" class="anchored" data-anchor-id="layer-0-to-layer-1"><span class="header-section-number">1.0.5.6</span> Layer 0 to Layer 1</h4>
+<p>Now <strong>following this beam upward</strong>, we first recognize that a fraction <span class="math inline">\(\epsilon\)</span> of this beam is <strong>absorbed</strong> in layer 0.</p>
+<p>The upward flux from layer 0 to layer 1 consists of the sum of two parts:</p>
+<ol type="1">
+<li>The <strong>transmitted part</strong> of whatever is incident from below (i.e. the part that is <strong>not absorbed</strong>)</li>
+<li><strong>New upward emissions</strong> from layer 0</li>
+</ol>
+<p>We can write this upward flux from layer 0 to layer 1 as:</p>
+<p><span class="math display">\[
+U_1 = (1-\epsilon) \sigma T_s^4 + \epsilon \sigma T_0^4
+\]</span></p>
+</section>
+<section id="beyond-layer-1" class="level4" data-number="1.0.5.7">
+<h4 data-number="1.0.5.7" class="anchored" data-anchor-id="beyond-layer-1"><span class="header-section-number">1.0.5.7</span> Beyond Layer 1</h4>
+<p>Continuing to follow the same beam, we follow the same logic! A fraction <span class="math inline">\(\epsilon\)</span> of <span class="math inline">\(U_1\)</span> is absorbed in layer 1, and therefore the transmitted part is <span class="math inline">\((1-\epsilon)U_1\)</span>.</p>
+<p>Including new emissions from layer 1, the upwelling flux above layer 1 is</p>
+<p><span class="math display">\[
+U_2 = (1-\epsilon) U_1 + \epsilon \sigma T_1^4
+\]</span></p>
+</section>
+<section id="outgoing-longwave-radiation" class="level4" data-number="1.0.5.8">
+<h4 data-number="1.0.5.8" class="anchored" data-anchor-id="outgoing-longwave-radiation"><span class="header-section-number">1.0.5.8</span> Outgoing Longwave Radiation</h4>
+<p>Since there is <strong>no more atmosphere above layer 1</strong>, this upwelling beam is our OLR for this model:</p>
+<p><span class="math display">\[
+\text{OLR} = U_2 = (1-\epsilon) U_1 + \epsilon \sigma T_1^4
+\]</span></p>
+<p>which, plugging in the above expression for <span class="math inline">\(U_1\)</span> works out to</p>
+<p><span class="math display">\[
+\text{OLR} = (1-\epsilon)^2 \sigma T_s^4 + \epsilon(1-\epsilon)\sigma T_0^4 + \epsilon \sigma T_1^4
+\]</span> Here the three terms represent <strong>contributions to the total OLR</strong> that <strong>originate from each of the three levels</strong>.</p>
+</section>
+<section id="limits-of-large-and-small-absorptivityemissivity" class="level4" data-number="1.0.5.9">
+<h4 data-number="1.0.5.9" class="anchored" data-anchor-id="limits-of-large-and-small-absorptivityemissivity"><span class="header-section-number">1.0.5.9</span> Limits of large and small absorptivity/emissivity</h4>
+<p>Think about the following two questions:</p>
+<ol type="1">
+<li>What happens to this expression if <span class="math inline">\(\epsilon = 1\)</span>? What does this represent physically?<br>
+</li>
+<li>What about if <span class="math inline">\(\epsilon = 0\)</span>?</li>
+</ol>
+<p>By allowing the atmosphere to partially absorb emissions from other levels, we now see that the Outgoing Longwave Radiation to space includes <strong>emissions from every level</strong> - and therefore is <strong>affected by temperature at every level</strong>!</p>
+</section>
+</section>
+<section id="tuning-the-grey-gas-model-to-observations" class="level3" data-number="1.0.6">
+<h3 data-number="1.0.6" class="anchored" data-anchor-id="tuning-the-grey-gas-model-to-observations"><span class="header-section-number">1.0.6</span> Tuning the grey gas model to observations</h3>
+<p>In building our new model we have introduced exactly <strong>one parameter</strong>, the absorptivity <span class="math inline">\(\epsilon\)</span> We need to choose a value for <span class="math inline">\(\epsilon\)</span></p>
+<p>We will tune our model so that it <strong>reproduces the observed global mean OLR</strong> given <strong>observed global mean temperatures</strong></p>
+<p>.</p>
+<section id="global-mean-air-temperature-observations." class="level4" data-number="1.0.6.1">
+<h4 data-number="1.0.6.1" class="anchored" data-anchor-id="global-mean-air-temperature-observations."><span class="header-section-number">1.0.6.1</span> Global Mean Air Temperature Observations.</h4>
+<p>To get appropriate temperatures for <span class="math inline">\(T_s\)</span>, <span class="math inline">\(T_0\)</span>, amd <span class="math inline">\(T_1\)</span> we use data from NOAA that we present here a global, annual mean lapse rate plot from NCEP Reanalysis data. This type of plot, where temperature (in ce;sius) is plotted along the horizontal axis) and pressure in hPa is plotted along the vertical axis) is often called a <strong>skew-T plot</strong>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="figures/atm_skew_T_plot.png" class="img-fluid figure-img" width="450"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>From. this we see that the surface temperature (at P = 1000 hPa) is about 288 K:</p>
+<p><span class="math display">\[
+T_s=288K
+\]</span></p>
+<p>and can make reasonable estimates for <span class="math inline">\(T_0\)</span> and <span class="math inline">\(T_1\)</span>:</p>
+<p><span class="math display">\[
+T_0 = 275K
+\]</span></p>
+<p>This is the average temperature for the layer between 1000 and 500 hPa.</p>
+<p>and</p>
+<p><span class="math display">\[
+T_1 = 230 K
+\]</span></p>
+<p>This is average temperature for the layer between 500 and0 hPa.</p>
+</section>
+<section id="olr" class="level4" data-number="1.0.6.2">
+<h4 data-number="1.0.6.2" class="anchored" data-anchor-id="olr"><span class="header-section-number">1.0.6.2</span> OLR</h4>
+<p>From measurement, it is found that</p>
+<p><span class="math display">\[
+OLR = 238.5 \ \text{Wm}^{-2}
+\]</span></p>
+</section>
+<section id="solving-for-epsilon" class="level4" data-number="1.0.6.3">
+<h4 data-number="1.0.6.3" class="anchored" data-anchor-id="solving-for-epsilon"><span class="header-section-number">1.0.6.3</span> Solving for <span class="math inline">\(\epsilon\)</span></h4>
+<p>The OLR formula for the leaky greenhouse that we derived above is</p>
+<p><span class="math display">\[
+\text{OLR} = (1-\epsilon)^2 \sigma T_s^4 + \epsilon(1-\epsilon)\sigma T_0^4 + \epsilon \sigma T_1^4
+\]</span></p>
+</section>
+<section id="solve-this-equation-graphically" class="level4" data-number="1.0.6.4">
+<h4 data-number="1.0.6.4" class="anchored" data-anchor-id="solve-this-equation-graphically"><span class="header-section-number">1.0.6.4</span> Solve this equation graphically</h4>
+<p>We need to do the following:</p>
+<p><strong>Write an R function that implements this formula</strong> The function should accept four input parameters: * The three temperatures <span class="math inline">\(T_s\)</span>, <span class="math inline">\(T_0\)</span>, and <span class="math inline">\(T_1\)</span> * The emissivity <span class="math inline">\(\epsilon\)</span></p>
+<p>Using this function, <strong>make a graph of OLR vs</strong> <span class="math inline">\(\epsilon\)</span> for the observed temperature values <span class="math inline">\(T_s = 288\text{ K}, T_0 = 275\text{ K}\)</span> and <span class="math inline">\(T_1 = 230\text{ K}\)</span></p>
+<p>For the graph, <span class="math inline">\(\epsilon\)</span> should range between 0 and 1.</p>
+<p>From your graph, find the approximate value of <span class="math inline">\(\epsilon\)</span> that gives <span class="math inline">\(OLR = 238.5\)</span></p>
+<p>The function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>OLR<span class="ot">&lt;-</span><span class="cf">function</span>(epsilon, Ts, T0, T1){</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  sigma <span class="ot">&lt;-</span> <span class="fl">5.67e-8</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  OLR <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">-</span>epsilon)<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sigma <span class="sc">*</span> Ts<span class="sc">^</span><span class="dv">4</span> <span class="sc">+</span> epsilon <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>epsilon) <span class="sc">*</span> sigma <span class="sc">*</span> T0<span class="sc">^</span><span class="dv">4</span> <span class="sc">+</span> epsilon <span class="sc">*</span> sigma <span class="sc">*</span> T1<span class="sc">^</span><span class="dv">4</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(OLR)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Set the values and create a data frame of OLRs vs epsilon in the range epsilon from 0 to 1</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Ts <span class="ot">&lt;-</span> <span class="dv">288</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>T0 <span class="ot">&lt;-</span> <span class="dv">275</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>T1 <span class="ot">&lt;-</span> <span class="dv">230</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>epsilons <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.01</span>) <span class="co"># generates a vector 0.00, 0.01, 0.02,....0.99, 1.00</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>OLRs <span class="ot">&lt;-</span> <span class="fu">OLR</span>(epsilons, Ts, T0, T1) <span class="co"># for each value in epsilons, calculates the OLR</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">epsilon =</span> epsilons, <span class="at">OLR =</span> OLRs) <span class="co"># combine to a data frame (ggplot needs data frames as input)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Plot these data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> epsilon, <span class="at">y =</span> OLR)) <span class="sc">+</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="fu">bquote</span>(<span class="st">"Absorptivity"</span><span class="sc">~</span>epsilon),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"OLR"</span>) <span class="sc">+</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.1</span>)) <span class="sc">+</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits=</span><span class="fu">c</span>(<span class="dv">150</span>,<span class="dv">400</span>), <span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">160</span>,<span class="dv">400</span>,<span class="dv">20</span>)) <span class="sc">+</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="at">x=</span><span class="sc">-</span><span class="fl">0.1</span>,<span class="at">y=</span><span class="fl">238.5</span>,<span class="at">xend=</span><span class="fl">0.586</span>,<span class="at">yend=</span><span class="fl">238.5</span>,<span class="at">linetype=</span><span class="st">"dashed"</span>,<span class="at">linewidth=</span><span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="at">x=</span><span class="fl">0.586</span>,<span class="at">y=</span><span class="dv">140</span>,<span class="at">xend=</span><span class="fl">0.586</span>,<span class="at">yend=</span><span class="fl">238.5</span>,<span class="at">linetype=</span><span class="st">"dashed"</span>,<span class="at">linewidth=</span><span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_cowplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="simple_climate_model_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>From which we could, with some work, determine that <span class="math inline">\(\epsilon \approx 0.586\)</span></p>
+<p>This is the absorptivity that guarantees that our model reproduces the observed OLR given the observed temperatures.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link" aria-label="Preface">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Preface</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>CC-BY-SA-4.0 (2025) Michael Hunt</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
